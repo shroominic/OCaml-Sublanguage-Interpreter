@@ -1,11 +1,11 @@
-(* ABSTRACT EXPRESSION TYPES *)
+(*    ABSTRACT EXPRESSIONS    *)
 (** variable *) 
 type var = string 
 
 (** constant *) 
 type con = 
-    ConBool of bool
-  | ConInt  of int
+    BoolCon of bool
+  | IntCon  of int
 
 (** operator *)
 type opr  = 
@@ -33,8 +33,8 @@ type expr =
   | LetR    of var * var * expr * expr 
   | LetRTy  of var * var * btype * btype * expr * expr
 
-(* ENVIRONMENTS *)
-(** environment type *)
+(*    ENVIRONMENTS    *)
+(** environment constructor type *)
 type ('a, 'b) env = ('a * 'b) list
 
 (** empty environment definition *)
@@ -48,3 +48,11 @@ let rec lookup (env: ('a, 'b) env) a =
   match env with
   | (a', b)::env -> if a = a' then Some b else lookup env a
   | [] -> None
+
+(*    VALUES    *)
+(** value constructor type *)
+type value = 
+    BoolVal of bool
+  | IntVal of int
+  | Closure of var * expr * (var, value) env
+  | Rclosure of var * var * expr * (var, value) env
