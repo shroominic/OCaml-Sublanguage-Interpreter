@@ -1,6 +1,5 @@
 (* imports *)
 open Grammar
-open Evaluator
 
 (*     EVALUATION TEST     *)
 
@@ -48,10 +47,10 @@ let fac_miniocaml =
         Var("n")), 
       Con(
         ConInt(1))))
-let result_miniocaml = evaluator fac_miniocaml []
+let result_miniocaml = Evaluator.evaluator fac_miniocaml []
 
 (** tests if both functions result in the same output *)
-let test () = 
+let evaluation_test () = 
   if result_ocaml = result_miniocaml 
   then print_endline "Evaluation Test passed"
   else print_endline "Evaluation Test not passed, there must be some mistake!"
