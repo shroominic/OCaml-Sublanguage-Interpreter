@@ -14,6 +14,7 @@ let fac n =
     else fac' (n-1) (n*m) 
   in fac' n 1
 let result_ocaml = fac input
+
 (** factorial function written in Mini-OCaml *)
 let fac_miniocaml = 
   Let(
