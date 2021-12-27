@@ -1,7 +1,3 @@
-(* TOKEN TYPES *)
-type token = TOKEN
-
-
 (* ABSTRACT EXPRESSION TYPES *)
 (** variable *) 
 type var = string 
@@ -36,3 +32,19 @@ type expr =
   | Let     of var * expr * expr  
   | LetR    of var * var * expr * expr 
   | LetRTy  of var * var * btype * btype * expr * expr
+
+(* ENVIRONMENTS *)
+(** environment type *)
+type ('a, 'b) env = ('a * 'b) list
+
+(** empty environment definition *)
+let empty: ('a, 'b) env = []
+
+(** updates an environment with a value pair (a, b) *)
+let update (env: ('a, 'b) env) a b : ('a, 'b) env = (a, b) :: env
+
+(** lookup recursivly for a key (a) and optional returns the corresponding value b *)
+let rec lookup (env: ('a, 'b) env) a = 
+  match env with
+  | (a', b)::env -> if a = a' then Some b else lookup env a
+  | [] -> None
