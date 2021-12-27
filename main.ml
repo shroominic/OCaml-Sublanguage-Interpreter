@@ -5,11 +5,5 @@ LEXER -> PARSER -> TYPE CHECKER -> EVALUATOR
 
 (* imports *)
 
-
 (** MAIN *)
 let main () = print_endline "TODO: main"
-
-
-
-
-
