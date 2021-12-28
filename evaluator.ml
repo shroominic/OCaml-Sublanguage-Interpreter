@@ -2,7 +2,7 @@
 open Grammar
 
 (** EVALUATOR - computes the value of an expression in an environment *)
-let eval env e : value = 
+let rec eval env e : value = 
   match e with
   | Var    (x)                  -> eval_var env x 
   | Con    (BoolCon b)          -> BoolVal b
@@ -13,8 +13,8 @@ let eval env e : value =
   | Lmda   (x, e)
   | LmdaTy (x, _, e)            -> Closure (x, e, env)
   | Let    (x, e1, e2)          -> eval (update env x (eval env e1)) e2
-  | Letrec (f, x, e1, e2) 
-  | LetRTy (f, x, _, _, e1, e2) -> eval (update env f Rclosure(f, x, e1, env)) e2
+  | LetR   (f, x, e1, e2) 
+  | LetRTy (f, x, _, _, e1, e2) -> eval (update env f (Rclosure (f, x, e1, env))) e2
 and eval_var env v = 
   let unwrap = lookup env v in 
   match unwrap with 
@@ -22,10 +22,10 @@ and eval_var env v =
   | None   -> failwith "missing variable"
 and eval_op o v1 v2 = 
   match o, v1, v2 with 
-  | Add,    IntCon(x), IntCon(y) -> IntCon(x + y)
-  | Sub,    IntCon(x), IntCon(y) -> IntCon(x - y)
-  | Mult,   IntCon(x), IntCon(y) -> IntCon(x * y)
-  | LessEq, IntCon(x), IntCon(y) -> BoolCon(x <= y)
+  | Add,    IntVal(x), IntVal(y) -> IntVal(x + y)
+  | Sub,    IntVal(x), IntVal(y) -> IntVal(x - y)
+  | Mul,    IntVal(x), IntVal(y) -> IntVal(x * y)
+  | LessEq, IntVal(x), IntVal(y) -> BoolVal(x <= y)
   | _, _, _ -> failwith "operator application not supported"
 and eval_fn v1 v2 = 
   match v1 with
@@ -34,9 +34,17 @@ and eval_fn v1 v2 =
   | _ -> failwith "function can't be evaluated"
 and eval_if v1 v2 v3 = 
   match v1 with
-  | BoolCon(true) -> v2
-  | BoolCon(false) -> v3
+  | BoolVal(true) -> v2
+  | BoolVal(false) -> v3
   | _ -> failwith "if statement can't be evaluated"
 
-(** testing *)
-let () = Test.evaluation_test ()
+
+let expr_to_evaluate = Con(IntCon(5))
+
+let result_miniocaml = 
+  let evaluation = eval empty expr_to_evaluate in 
+  match evaluation with
+  | IntVal (x) -> x
+  | _ -> failwith "unable to unwrap type"
+
+let () = print_endline ("Output: " ^ string_of_int result_miniocaml)
