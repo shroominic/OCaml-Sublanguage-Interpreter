@@ -1,7 +1,7 @@
 (* imports *)
 open Grammar
 
-(** EVALUATOR - computes the value of an expression in an environment *)
+(**   EVALUATOR - computes the value of an expression in an environment   *)
 let rec eval env e : value = 
   match e with
   | Var    (x)                  -> eval_var env x
@@ -9,7 +9,7 @@ let rec eval env e : value =
   | Con    (IntCon i)           -> IntVal i
   | OpApp  (o, e1, e2)          -> eval_op o (eval env e1) (eval env e2)
   | FnApp  (e1, e2)             -> eval_fn (eval env e1) (eval env e2)
-  | If     (e1, e2, e3)         -> eval_if (eval env e1) (eval env e2) (eval env e3)
+  | If     (e1, e2, e3)         -> eval_if env e1 e2 e3
   | Lmda   (x, e)
   | LmdaTy (x, _, e)            -> Closure (x, e, env)
   | Let    (x, e1, e2)          -> eval (update env x (eval env e1)) e2
@@ -36,16 +36,19 @@ and eval_fn v1 v2 =
   | Rclosure(f, x, e, env') -> eval (update (update env' f v1) x v2) e 
   | _ -> failwith "function can't be evaluated"
 (**  *)
-and eval_if v1 v2 v3 = 
+and eval_if env e1 e2 e3 = 
+  let v1 = eval env e1 in
   match v1 with
-  | BoolVal(true) -> v2
-  | BoolVal(false) -> v3
+  | BoolVal(true) -> eval env e2
+  | BoolVal(false) -> eval env e3
   | _ -> failwith "if statement can't be evaluated"
+
 
 (**   DEBUG AND TESTING   *)
 
 (** test input *)
-let input: int = 6
+let input: int = 17
+let () = print_endline ("Factorial(" ^ (string_of_int input) ^ ")")
 
 (** factorial function written in OCaml *)
 let result_ocaml = (let fac = 
@@ -58,7 +61,7 @@ let result_ocaml = (let fac =
 
                          in fac' n 1) in fac) input
 
-let () = print_endline ("OCaml result: " ^ (string_of_int result_ocaml) ^ "\n")
+let () = print_endline ("OCaml       : " ^ (string_of_int result_ocaml))
 
 (** factorial function written in Mini-OCaml *)
 let fac_miniocaml = 
@@ -106,10 +109,10 @@ let result_miniocaml =
   match evaluation with
   | IntVal (x) -> x
   | _ -> failwith "unable to unwrap type"
+let () = print_endline ("Mini-OCaml  : " ^ (string_of_int result_miniocaml))
 
 (** tests if both functions result in the same output *)
-let evaluation_test () = 
+let () = 
   if result_ocaml = result_miniocaml 
   then print_endline "Evaluation Test passed"
   else print_endline "Evaluation Test not passed, there must be some mistake!"
-
