@@ -114,5 +114,5 @@ let () = print_endline ("Mini-OCaml  : " ^ (string_of_int result_miniocaml))
 (** tests if both functions result in the same output *)
 let () = 
   if result_ocaml = result_miniocaml 
-  then print_endline "Evaluation Test passed"
-  else print_endline "Evaluation Test not passed, there must be some mistake!"
+  then print_endline "Evaluation test passed"
+  else print_endline "Evaluation test not passed, there must be some mistake!"
