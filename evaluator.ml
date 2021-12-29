@@ -74,8 +74,8 @@ let fac_miniocaml =
         LetRTy(
           "fac'",
           "n",
-          Arrow(Arrow(Int, Int), Int),
           Int,
+          Arrow(Int, Int),
           LmdaTy(
             "m",
             Int,
