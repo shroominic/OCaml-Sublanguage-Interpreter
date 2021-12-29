@@ -56,3 +56,29 @@ type value =
   | IntVal of int
   | Closure of var * expr * (var, value) env
   | Rclosure of var * var * expr * (var, value) env
+
+(*    TOKENS    *)
+type const = 
+    BCON of bool 
+  | ICON of int
+type token = 
+    LP 
+  | RP 
+  | EQ 
+  | COL 
+  | ARR 
+  | ADD 
+  | SUB 
+  | MUL 
+  | LEQ
+  | IF 
+  | THEN 
+  | ELSE 
+  | LAM 
+  | LET
+  | IN 
+  | REC
+  | CON of const 
+  | VAR of string 
+  | BOOL 
+  | INT
