@@ -58,9 +58,11 @@ type value =
   | Rclosure of var * var * expr * (var, value) env
 
 (*    TOKENS    *)
+(** token constants *)
 type const = 
     BCON of bool 
   | ICON of int
+(** token constructor type *)
 type token = 
     LP 
   | RP 
