@@ -1,7 +1,6 @@
 (* imports *)
 open Grammar
 
-
 (** ascii code representation of a char *)
 let code = Char.code
 
@@ -49,11 +48,11 @@ let lex s : token list =
       | '(' -> lex (i+1) (LP::l)
       | ')' -> lex (i+1) (RP::l)
       | '<' -> if verify (i+1) '='
-               then lex (i+2) (LEQ::l)
-               else failwith "lexer: '=' expected"
-      | '-' -> if verify (i+1)
-               then lex (i+2) (ARR::l)
-               else lex (i+1) (SUB::l)
+        then lex (i+2) (LEQ::l)
+        else failwith "lexer: '=' expected"
+      | '-' -> if verify (i+1) '>'
+        then lex (i+2) (ARR::l)
+        else lex (i+1) (SUB::l)
       | c when whitespace c -> lex (i+1) l
       | c when digit c      -> lex_num (i+1) (num c) l
       | c when lc_letter c  -> lex_id (i+1) 1 l
@@ -90,5 +89,5 @@ let lex s : token list =
   in lex 0 []
 
 
-  (* TESTING *)
-  (* todo_implement *)
+(* TESTING *)
+(* todo_implement *)
