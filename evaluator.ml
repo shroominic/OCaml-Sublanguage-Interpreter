@@ -45,7 +45,7 @@ and eval_if env e1 e2 e3 =
 
 
 (**   TESTING   *)
-let run_tests () = 
+let test_evaluator () = 
   (** test input *)
   let input: int = 17 in
   let () = print_endline ("Factorial(" ^ (string_of_int input) ^ ")") in
