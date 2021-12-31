@@ -28,6 +28,7 @@ let check_string str : btype = check empty parsed_string
 (** evaluate string: string -> value *)
 let eval_string str : value = eval empty parsed_string
 
+(** value -> int *)
 let unwrap_int_value v : int = 
   match v with
   | IntVal (x) -> x
