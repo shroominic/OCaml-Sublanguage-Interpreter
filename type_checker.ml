@@ -45,51 +45,52 @@ and check_let_rec_ty f x t1 t2 e1 e2 env =
 
 
 (**   TESTING   *)
+let test_type_checker () = 
 
-(** factorial function written in Mini-OCaml *)
-let fac_miniocaml = 
-  FnApp(
-    Let(
-      "fac",
-      LmdaTy(
-        "n",
-        Int,
-        LetRTy(
-          "fac'",
+  (** factorial function written in Mini-OCaml *)
+  let fac_miniocaml = 
+    FnApp(
+      Let(
+        "fac",
+        LmdaTy(
           "n",
           Int,
-          Arrow(Int, Int),
-          LmdaTy(
-            "m",
+          LetRTy(
+            "fac'",
+            "n",
             Int,
-            If(
-              OpApp(
-                LessEq,
-                Var("n"),
-                Con(IntCon(1))),
-              Var("m"),
-              FnApp(
-                FnApp(
-                  Var("fac'"),
-                  OpApp(
-                    Sub,
-                    Var("n"),
-                    Con(IntCon(1)))),
+            Arrow(Int, Int),
+            LmdaTy(
+              "m",
+              Int,
+              If(
                 OpApp(
-                  Mul,
+                  LessEq,
                   Var("n"),
-                  Var("m"))))),
-          FnApp(
+                  Con(IntCon(1))),
+                Var("m"),
+                FnApp(
+                  FnApp(
+                    Var("fac'"),
+                    OpApp(
+                      Sub,
+                      Var("n"),
+                      Con(IntCon(1)))),
+                  OpApp(
+                    Mul,
+                    Var("n"),
+                    Var("m"))))),
             FnApp(
-              Var("fac'"), 
-              Var("n")), 
-            Con(IntCon(1))))), 
-      Var("fac")),
-    Con(IntCon(5)))
+              FnApp(
+                Var("fac'"), 
+                Var("n")), 
+              Con(IntCon(1))))), 
+        Var("fac")),
+      Con(IntCon(5))) in
 
-let type_miniocaml = check empty fac_miniocaml
+  let type_miniocaml = check empty fac_miniocaml in
 
-(** tests if both functions result in the same type *)
-let () = if type_miniocaml = Int
+  (** tests if both functions result in the same type *)
+  if type_miniocaml = Int
   then print_endline "TypeChecking test passed"
   else print_endline "TypeChecking test not passed, there must be some mistake!"

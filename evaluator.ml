@@ -45,74 +45,73 @@ and eval_if env e1 e2 e3 =
 
 
 (**   TESTING   *)
+let run_tests () = 
+  (** test input *)
+  let input: int = 17 in
+  let () = print_endline ("Factorial(" ^ (string_of_int input) ^ ")") in
 
-(** test input *)
-let input: int = 17
-let () = print_endline ("Factorial(" ^ (string_of_int input) ^ ")")
+  (** factorial function written in OCaml *)
+  let result_ocaml = (let fac = 
+                        (fun n -> 
+                           let rec fac' n = 
+                             (fun m -> 
+                                if n < 1 
+                                then m 
+                                else fac' (n-1) (n*m))
 
-(** factorial function written in OCaml *)
-let result_ocaml = (let fac = 
-                      (fun n -> 
-                         let rec fac' n = 
-                           (fun m -> 
-                              if n < 1 
-                              then m 
-                              else fac' (n-1) (n*m))
+                           in fac' n 1) in fac) input in
 
-                         in fac' n 1) in fac) input
+  let () = print_endline ("OCaml       : " ^ (string_of_int result_ocaml)) in
 
-let () = print_endline ("OCaml       : " ^ (string_of_int result_ocaml))
-
-(** factorial function written in Mini-OCaml *)
-let fac_miniocaml = 
-  FnApp(
-    Let(
-      "fac",
-      LmdaTy(
-        "n",
-        Int,
-        LetRTy(
-          "fac'",
+  (** factorial function written in Mini-OCaml *)
+  let fac_miniocaml = 
+    FnApp(
+      Let(
+        "fac",
+        LmdaTy(
           "n",
           Int,
-          Arrow(Int, Int),
-          LmdaTy(
-            "m",
+          LetRTy(
+            "fac'",
+            "n",
             Int,
-            If(
-              OpApp(
-                LessEq,
-                Var("n"),
-                Con(IntCon(1))),
-              Var("m"),
-              FnApp(
-                FnApp(
-                  Var("fac'"),
-                  OpApp(
-                    Sub,
-                    Var("n"),
-                    Con(IntCon(1)))),
+            Arrow(Int, Int),
+            LmdaTy(
+              "m",
+              Int,
+              If(
                 OpApp(
-                  Mul,
+                  LessEq,
                   Var("n"),
-                  Var("m"))))),
-          FnApp(
+                  Con(IntCon(1))),
+                Var("m"),
+                FnApp(
+                  FnApp(
+                    Var("fac'"),
+                    OpApp(
+                      Sub,
+                      Var("n"),
+                      Con(IntCon(1)))),
+                  OpApp(
+                    Mul,
+                    Var("n"),
+                    Var("m"))))),
             FnApp(
-              Var("fac'"), 
-              Var("n")), 
-            Con(IntCon(1))))), 
-      Var("fac")),
-    Con(IntCon(input)))
+              FnApp(
+                Var("fac'"), 
+                Var("n")), 
+              Con(IntCon(1))))), 
+        Var("fac")),
+      Con(IntCon(input))) in
 
-let result_miniocaml = 
-  let evaluation = eval empty fac_miniocaml in 
-  match evaluation with
-  | IntVal (x) -> x
-  | _ -> failwith "unable to unwrap type"
-let () = print_endline ("Mini-OCaml  : " ^ (string_of_int result_miniocaml))
+  let result_miniocaml = 
+    let evaluation = eval empty fac_miniocaml in 
+    match evaluation with
+    | IntVal (x) -> x
+    | _ -> failwith "unable to unwrap type" in
+  let () = print_endline ("Mini-OCaml  : " ^ (string_of_int result_miniocaml)) in
 
-(** tests if both functions result in the same output *)
-let () = 
+  (** tests if both functions result in the same output *)
   if result_ocaml = result_miniocaml 
   then print_endline "Evaluation test passed"
   else print_endline "Evaluation test not passed, there must be some mistake!"
